@@ -95,10 +95,13 @@ class Statusbar extends Component {
 
       #tabs ul li:last-child {
           --flavour: var(--accent);
+          position: absolute;
           width: 35px;
           height: 3px;
           background: var(--flavour);
           bottom: 0;
+          left: 0;
+          transform: translateX(calc(var(--active-tab-index, 0) * 35px));
           transition: all .3s;
       }
 
@@ -106,31 +109,6 @@ class Statusbar extends Component {
           color: ${CONFIG.palette.text};
           font-size: 13px;
           padding: 6px 0;
-      }
-
-      #tabs ul li[active]:nth-child(2) ~ li:last-child { margin: 0 0 0 35px; }
-      #tabs ul li[active]:nth-child(3) ~ li:last-child { margin: 0 0 0 70px; }
-      #tabs ul li[active]:nth-child(4) ~ li:last-child { margin: 0 0 0 105px; }
-      #tabs ul li[active]:nth-child(5) ~ li:last-child { margin: 0 0 0 140px; }
-
-      #tabs ul li[active]:nth-child(1) ~ li:last-child {
-          --flavour: ${CONFIG.palette.green};
-      }
-
-      #tabs ul li[active]:nth-child(2) ~ li:last-child {
-          --flavour: ${CONFIG.palette.peach};
-      }
-
-      #tabs ul li[active]:nth-child(3) ~ li:last-child {
-          --flavour: ${CONFIG.palette.red};
-      }
-
-      #tabs ul li[active]:nth-child(4) ~ li:last-child {
-          --flavour: ${CONFIG.palette.blue};
-      }
-
-      #tabs ul li[active]:nth-child(5) ~ li:last-child {
-          --flavour: ${CONFIG.palette.mauve};
       }
 
       .widgets {
@@ -276,23 +254,11 @@ class Statusbar extends Component {
    */
   handleWheelScroll(event) {
     if (!event) return;
-
-    let { target, wheelDelta } = event;
-
+    const { target, wheelDelta } = event;
     if (target.shadow && target.shadow.activeElement) return;
-
-    let activeTab = -1;
-    this.refs.tabs.forEach((tab, index) => {
-      if (tab.getAttribute("active") === "") {
-        activeTab = index;
-      }
-    });
-
-    if (wheelDelta > 0) {
-      this.activateByKey((activeTab + 1) % (this.refs.tabs.length - 1));
-    } else {
-      this.activateByKey(activeTab - 1 < 0 ? this.refs.tabs.length - 2 : activeTab - 1);
-    }
+    const tabCount = this.externalRefs.categories.length;
+    const nextIndex = wheelDelta > 0 ? (this.currentTabIndex + 1) % tabCount : (this.currentTabIndex - 1 + tabCount) % tabCount;
+    this.activateByKey(nextIndex);
   }
 
   /**
@@ -302,13 +268,30 @@ class Statusbar extends Component {
   handleKeyPress(event) {
     if (!event) return;
 
-    let { target, key } = event;
+    const { target, code, shiftKey, ctrlKey, altKey, metaKey,
+    } = event;
 
     if (target.shadow && target.shadow.activeElement) return;
+    if (ctrlKey || altKey || metaKey) return;
 
-    // Activate tab by number key (1-5)
-    if (Number.isInteger(parseInt(key)) && key <= this.externalRefs.categories.length) {
-      this.activateByKey(key - 1);
+    const tabCount = this.externalRefs.categories.length;
+
+    if (code === "ArrowRight" || code === "ArrowDown" || code === "ArrowLeft" || code === "ArrowUp") {
+      const movingForward = code === "ArrowRight" || code === "ArrowUp";
+      const nextIndex = movingForward ? (this.currentTabIndex + 1) % tabCount : (this.currentTabIndex - 1 + tabCount) % tabCount;
+      event.preventDefault();
+      this.activateByKey(nextIndex);
+      return;
+    }
+
+    const match = code.match(/^(?:Digit|Numpad)([0-9])$/);
+    if (!match) return;
+    const digit = Number(match[1]);
+    const tabNumber = shiftKey ? digit === 0 ? 20 : digit + 10 : digit === 0 ? 10 : digit;
+    const tabIndex = tabNumber - 1;
+    if (tabIndex >= 0 && tabIndex < tabCount) {
+      event.preventDefault();
+      this.activateByKey(tabIndex);
     }
   }
 
@@ -317,22 +300,44 @@ class Statusbar extends Component {
    * @param {number} key - The tab index to activate
    */
   activateByKey(key) {
-    if (key < 0) return;
+    const tabCount = this.externalRefs.categories.length;
+
+    if (!Number.isInteger(key) || key < 0 || key >= tabCount) {
+      return;
+    }
+
     this.currentTabIndex = key;
 
     this.activate(this.refs.tabs, this.refs.tabs[key]);
-    this.activate(this.externalRefs.categories, this.externalRefs.categories[key]);
+    this.activate(
+      this.externalRefs.categories,
+      this.externalRefs.categories[key]
+    );
+
+    const indicator = this.refs.tabs[this.refs.tabs.length - 1];
+
+    indicator.style.setProperty("--active-tab-index", key);
   }
+
 
   /**
    * Creates tab elements based on categories count
    */
   createTabs() {
     const categoriesCount = this.externalRefs.categories.length;
-
-    for (let i = 0; i <= categoriesCount; i++) {
-      this.refs.indicator.innerHTML += `<li tab-index=${i} ${i == 0 ? "active" : ""}></li>`;
+    this.refs.indicator.innerHTML = "";
+    for (let i = 0; i < categoriesCount; i++) {
+      const tab = document.createElement("li");
+      tab.setAttribute("tab-index", i);
+      if (i === 0) {
+        tab.setAttribute("active", "");
+      }
+      this.refs.indicator.appendChild(tab);
     }
+    // Add the indicator as the final <li>
+    const indicator = document.createElement("li");
+    indicator.style.setProperty("--active-tab-index", this.currentTabIndex);
+    this.refs.indicator.appendChild(indicator);
   }
 
   /**
