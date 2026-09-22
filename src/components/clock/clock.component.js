@@ -18,7 +18,7 @@ class Clock extends Component {
    * @returns {Array<string>} Array of resource imports
    */
   imports() {
-    return [this.getResource('icons', 'material'), this.getResource('fonts', 'roboto')];
+    return [this.getResource('icons', 'material')];
   }
 
   /**
@@ -39,14 +39,16 @@ class Clock extends Component {
 
         .clock-time {
             white-space: nowrap;
-            font: 300 9pt 'Roboto', sans-serif;
+            font: 300 9pt 'JetBrainsMono Nerdfont';
+            src: url(../fonts/jetbrains-mono-nerdfont.ttf);
             color: ${CONFIG.palette.text};
             letter-spacing: .5px;
             margin: 0;
         }
 
         .clock-label {
-            font: 300 9pt 'Roboto', sans-serif;
+            font: 300 9pt 'JetBrainsMono Nerdfont';
+            src: url(../fonts/jetbrains-mono-nerdfont.ttf)
             color: ${CONFIG.palette.text};
             margin-right: 2px;
             letter-spacing: .5px;

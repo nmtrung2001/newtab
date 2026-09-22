@@ -5,15 +5,8 @@ class Component extends HTMLElement {
   refs = {};
 
   resources = {
-    fonts: {
-      roboto: '<link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700" rel="stylesheet">',
-      nunito: '<link href="https://fonts.googleapis.com/css?family=Nunito:200" rel="stylesheet">',
-      raleway: '<link href="https://fonts.googleapis.com/css?family=Raleway:600" rel="stylesheet">',
-    },
     localFonts: {
-      roboto: '<link rel="stylesheet" href="src/fonts/roboto-local.css">',
-      nunito: '<link rel="stylesheet" href="src/fonts/nunito-local.css">',
-      raleway: '<link rel="stylesheet" href="src/fonts/raleway-local.css">',
+      jetbrains: '<link rel="stylesheet" href="src/fonts/jetbrains-mono-nerdfont-local.css">'
     },
     icons: {
       material:
@@ -29,9 +22,7 @@ class Component extends HTMLElement {
 
   // Map of (category, name) -> local-variant key, applied when CONFIG.localFonts is true
   static localOverrides = {
-    "fonts.roboto": ["localFonts", "roboto"],
-    "fonts.nunito": ["localFonts", "nunito"],
-    "fonts.raleway": ["localFonts", "raleway"],
+    "fonts.jetbrains": ["localFonts"],
     "icons.material": ["icons", "materialLocal"],
     "libs.awoo": ["libs", "awooLocal"],
   };

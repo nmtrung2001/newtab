@@ -1,0 +1,8 @@
+/* Local JetBrainsMono NerdFont font definitions */
+@font-face {
+    font-family: 'JetBrainsMono NerdFont';
+    font-style: normal;
+    font-weight: 100;
+    font-stretch: normal;
+    src: url('./jetbrains-mono-nerdfont.ttf') format('truetype');
+}

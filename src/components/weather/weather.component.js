@@ -64,7 +64,7 @@ class Weather extends Component {
    * @returns {Array} Array of resource imports
    */
   imports() {
-    return [this.getResource('icons', 'material'), this.getResource('fonts', 'roboto')];
+    return [this.getResource('icons', 'material')];
   }
 
   /**
@@ -81,7 +81,8 @@ class Weather extends Component {
       }
 
       .weather-temperature {
-          font: 300 9pt 'Roboto', sans-serif;
+          font: 300 9pt 'JetBrainsMono Nerdfont';
+          src: url(../fonts/jetbrains-mono-nerdfont.ttf);
           color: ${CONFIG.palette.text};
           white-space: nowrap;
           display: flex;

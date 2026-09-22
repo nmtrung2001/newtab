@@ -15,7 +15,8 @@ h5,
 h6,
 p,
 span {
-  font-family: "Roboto", sans-serif;
+  font-family: JetBrainsMono Nerdfont;
+  src: url(../fonts/jetbrains-mono-nerdfont.ttf);
 }
 
 .\+ {

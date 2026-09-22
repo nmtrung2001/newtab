@@ -54,7 +54,8 @@ class Search extends Component {
           box-shadow: inset 0 -2px ${CONFIG.palette.crust};
           padding: .5em 0;
           background: none;
-          font: 500 22px 'Roboto', sans-serif;
+          font: 500 22px 'JetBrainsMono Nerdfont';
+          src: url(../fonts/jetbrains-mono-nerdfont.ttf);
           letter-spacing: 1px;
           color: ${CONFIG.palette.lavender};
       }
@@ -97,7 +98,8 @@ class Search extends Component {
           cursor: default;
           transition: all .2s;
           font-size: 12px;
-          font-family: 'Roboto', sans-serif;
+          font-family: 'JetBrainsMono Nerdfont';
+          src: url(../fonts/jetbrains-mono-nerdfont.ttf);
       }
 
       .search-engines li {
@@ -117,7 +119,6 @@ class Search extends Component {
    */
   imports() {
     return [
-      this.getResource('fonts', 'roboto'),
       this.getResource('icons', 'material'),
     ];
   }
